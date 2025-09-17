@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Question Choice Panel</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                padding: 20px;
+            }
+            .choice-panel {
+                margin-top: 20px;
+                display: none;
+                border: 1px solid #ccc;
+                padding: 15px;
+                border-radius: 8px;
+                width: 300px;
+            }
+            .choice {
+                margin-bottom: 10px;
+            }
+            label {
+                margin-right: 10px;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Select a Question</h1>
+        <select id="questionDropdown">
+            <option value="">--Select Question--</option>
+            <option value="1">Question 1</option>
+            <option value="2">Question 2</option>
+            <option value="3">Question 3</option>
+            <option value="4">Question 4</option>
+        </select>
+
+        <div class="choice-panel" id="choicePanel">
+            <h3>Choices for <span id="questionNumber"></span></h3>
+
+            <div class="choice">
+                <input type="text" placeholder="Choice 1" id="choice1" />
+                <label><input type="checkbox" value="A" /> A</label>
+                <label><input type="checkbox" value="B" /> B</label>
+                <label><input type="checkbox" value="C" /> C</label>
+                <label><input type="checkbox" value="D" /> D</label>
+            </div>
+
+            <div class="choice">
+                <input type="text" placeholder="Choice 2" id="choice2" />
+                <label><input type="checkbox" value="A" /> A</label>
+                <label><input type="checkbox" value="B" /> B</label>
+                <label><input type="checkbox" value="C" /> C</label>
+                <label><input type="checkbox" value="D" /> D</label>
+            </div>
+
+            <div class="choice">
+                <input type="text" placeholder="Choice 3" id="choice3" />
+                <label><input type="checkbox" value="A" /> A</label>
+                <label><input type="checkbox" value="B" /> B</label>
+                <label><input type="checkbox" value="C" /> C</label>
+                <label><input type="checkbox" value="D" /> D</label>
+            </div>
+
+            <div class="choice">
+                <input type="text" placeholder="Choice 4" id="choice4" />
+                <label><input type="checkbox" value="A" /> A</label>
+                <label><input type="checkbox" value="B" /> B</label>
+                <label><input type="checkbox" value="C" /> C</label>
+                <label><input type="checkbox" value="D" /> D</label>
+            </div>
+        </div>
+
+        <script>
+            const dropdown = document.getElementById("questionDropdown");
+            const panel = document.getElementById("choicePanel");
+            const questionNumberSpan =
+                document.getElementById("questionNumber");
+
+            dropdown.addEventListener("change", () => {
+                const selected = dropdown.value;
+                if (selected) {
+                    panel.style.display = "block";
+                    questionNumberSpan.textContent = selected;
+                } else {
+                    panel.style.display = "none";
+                }
+            });
+        </script>
+    </body>
+</html>

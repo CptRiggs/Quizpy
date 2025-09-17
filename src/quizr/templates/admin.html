@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Quiz</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                padding: 20px;
+            }
+            .choice-panel {
+                margin-top: 20px;
+                display: none;
+                border: 1px solid #ccc;
+                padding: 15px;
+                border-radius: 8px;
+                width: 500px;
+            }
+            .choice {
+                margin-bottom: 10px;
+            }
+            label {
+                margin-right: 10px;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Select a Question</h1>
+        <select id="questionDropdown">
+            <option value="">--Select Question--</option>
+            {% for q in questions %}
+            <option value="{{ loop.index0 }}">Question {{ loop.index }}</option>
+            {% endfor %}
+        </select>
+
+        <div class="choice-panel" id="choicePanel">
+            <h3 id="questionText"></h3>
+            <p id="questionDesc"></p>
+
+            <div id="choicesContainer"></div>
+
+            <div style="margin-top: 10px">
+                <label>
+                    <input type="checkbox" id="displayCorrectCheckbox" />
+                    Display Correct Answer
+                </label>
+            </div>
+        </div>
+
+        <script>
+            const questions = {{ questions|tojson }};
+            const dropdown = document.getElementById('questionDropdown');
+            const panel = document.getElementById('choicePanel');
+            const questionText = document.getElementById('questionText');
+            const questionDesc = document.getElementById('questionDesc');
+            const choicesContainer = document.getElementById('choicesContainer');
+            const displayCorrectCheckbox = document.getElementById('displayCorrectCheckbox');
+
+            // Initialize WebSocket
+            const ws = new WebSocket(`ws://${location.host}/ws`); // replace with actual endpoint
+
+            // Function to send updated question JSON
+            function sendQuestionUpdate() {
+                if (!currentQuestion) return;
+                ws.send(JSON.stringify(currentQuestion));
+            }
+
+            // Currently selected question
+            let currentQuestion = null;
+
+            // Update TeamChoices based on checkboxes
+            function updateTeamChoices() {
+                currentQuestion.TeamChoices.forEach((teamChoice, i) => {
+                    const choiceDiv = choicesContainer.children[i];
+                    const checkboxes = choiceDiv.querySelectorAll('input[type="checkbox"]');
+                    const selectedTeams = [];
+                    checkboxes.forEach(cb => {
+                        if(cb.checked) selectedTeams.push(cb.value);
+                    });
+                    teamChoice[1] = selectedTeams;
+                });
+                sendQuestionUpdate();
+            }
+
+            // Show selected question
+            dropdown.addEventListener('change', () => {
+                const index = dropdown.value;
+                if (index === "") {
+                    panel.style.display = 'none';
+                    currentQuestion = null;
+                    return;
+                }
+
+                currentQuestion = JSON.parse(JSON.stringify(questions[index])); // clone to avoid mutating original
+                questionText.textContent = currentQuestion.Question;
+                questionDesc.textContent = currentQuestion.Desc || '';
+                choicesContainer.innerHTML = '';
+
+                currentQuestion.Choices.forEach((choice, i) => {
+                    const div = document.createElement('div');
+                    div.classList.add('choice');
+
+                    div.innerHTML = `
+                        <span>${choice[0]}) ${choice[1]}</span>
+                        <label><input type="checkbox" value="teamA"> A</label>
+                        <label><input type="checkbox" value="teamB"> B</label>
+                        <label><input type="checkbox" value="teamC"> C</label>
+                        <label><input type="checkbox" value="teamD"> D</label>
+                    `;
+
+                    // pre-check the team choices
+                    const teamForChoice = currentQuestion.TeamChoices[i][1];
+                    div.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+                        cb.checked = teamForChoice.includes(cb.value);
+                        cb.addEventListener('change', () => {
+                            updateTeamChoices();
+                        });
+                    });
+
+                    choicesContainer.appendChild(div);
+                });
+
+                // displayCorrect checkbox
+                displayCorrectCheckbox.checked = currentQuestion.displayCorrect;
+                displayCorrectCheckbox.addEventListener('change', () => {
+                    currentQuestion.displayCorrect = displayCorrectCheckbox.checked;
+                    sendQuestionUpdate();
+                });
+
+                panel.style.display = 'block';
+                sendQuestionUpdate();
+            });
+        </script>
+    </body>
+</html>

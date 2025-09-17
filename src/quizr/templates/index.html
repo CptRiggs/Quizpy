@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+        <script type="text/javascript">
+            const ws = new WebSocket(`ws://${location.host}/ws`);
+
+            ws.addEventListener("message", function (event) {
+                let questions;
+                try {
+                    questions = JSON.parse(event.data); // convert from string to object
+                } catch (e) {
+                    console.error("Invalid JSON from server:", event.data);
+                    return;
+                }
+
+                console.log("Received question:", questions);
+
+                // Update question and description
+                document.getElementById("ques").innerText = questions.Question;
+                document.getElementById("desc").innerText =
+                    questions.Desc || "";
+
+                // Update choices
+                for (let i = 0; i < questions.Choices.length; i++) {
+                    const [letter, text] = questions.Choices[i]; // destructure
+                    const elem = document.getElementById(`choice${i + 1}`);
+                    if (elem) {
+                        elem.textContent = `${letter}) ${text}`;
+                    }
+                }
+                for (let i = 0; i < questions.TeamChoices.length; i++) {
+                    const [choiceId, teams] = questions.TeamChoices[i]; // e.g. ["choice1", ["teamA","teamC"]]
+                    const elem = document.getElementById(choiceId);
+                    if (elem) {
+                        // Clear previous team classes first (optional)
+                        elem.classList.remove(
+                            "teamA",
+                            "teamB",
+                            "teamC",
+                            "teamD",
+                            "correct",
+                        );
+
+                        // Add all new team classes
+                        for (let j = 0; j < teams.length; j++) {
+                            elem.classList.add(teams[j]);
+                        }
+
+                        console.log(choiceId, "=>", elem.classList.value);
+                    }
+                }
+                const elem = document.getElementById(questions.correct);
+                if (questions.displayCorrect) {
+                    elem.classList.remove(
+                        "teamA",
+                        "teamB",
+                        "teamC",
+                        "teamD",
+                        "correct",
+                    );
+                    elem.classList.add("correct");
+                }
+            });
+        </script>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                font-size: 30px;
+                margin: 0;
+                border: 0;
+                height: 100vh;
+                width: 100vw;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-content: center;
+            }
+
+            .teamA {
+                background-color: #ffd6d6;
+            }
+            .teamB {
+                background-color: #d6f5d6;
+            }
+            .teamC {
+                background-color: #d6e9ff;
+            }
+            .teamD {
+                background-color: #fff5d6;
+            }
+            .correct {
+                background-color: #90ee90 !important; /* light green */
+                border: 2px solid #008000;
+                color: #000;
+            }
+
+            #questionBox {
+                width: 60%;
+                min-height: 60%;
+                border: 1px solid black;
+                align-self: center;
+                border-radius: 50px;
+                padding: 30px;
+            }
+
+            h1,
+            h2 {
+                margin-left: 30px;
+            }
+
+            h2 {
+                font-weight: normal;
+            }
+
+            .choices {
+                width: 70%;
+                height: 4vh;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                border: 1px solid black;
+                border-radius: 20px;
+                align-self: flex-start;
+                margin-left: 30px;
+                padding-left: 20px;
+                margin-bottom: 30px;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="questionBox">
+            <h1 id="ques"></h1>
+            <h2 id="desc"></h2>
+            <div class="choices" id="choice1"></div>
+            <div class="choices" id="choice2"></div>
+            <div class="choices" id="choice3"></div>
+            <div class="choices" id="choice4"></div>
+        </div>
+    </body>
+</html>

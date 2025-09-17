@@ -1,0 +1,38 @@
+[
+    {
+        "Question": "Who originally coded python?",
+        "Desc": "",
+        "Choices": [
+            ["A", "Linus Torvalds"],
+            ["B", "Richard Stallman"],
+            ["C", "Guido Von Rossum"],
+            ["D", "John Stathom"]
+        ],
+        "TeamChoices": [
+            ["choice1", []],
+            ["choice2", []],
+            ["choice3", []],
+            ["choice4", []]
+        ],
+        "correct": "choice3",
+        "displayCorrect": false
+    },
+    {
+        "Question": "What is output of this?",
+        "Desc": "print(int(True))",
+        "Choices": [
+            ["A", "1"],
+            ["B", "0"],
+            ["C", "<type int>"],
+            ["D", "Error"]
+        ],
+        "TeamChoices": [
+            ["choice1", []],
+            ["choice2", []],
+            ["choice3", []],
+            ["choice4", []]
+        ],
+        "correct": "choice4",
+        "displayCorrect": false
+    }
+]

@@ -1,0 +1,20 @@
+[
+    {
+        "Question": "1) Who originally coded python?",
+        "Desc": "",
+        "Choices": [
+            ["A", "Linus Torvalds"],
+            ["B", "Richard Stallman"],
+            ["C", "Guido Von Rossum"],
+            ["D", "John Stathom"]
+        ],
+        "TeamChoices": [
+            ["A", ["A", "B"]],
+            ["B", []],
+            ["C", []],
+            ["D", []]
+        ],
+        "correct": "C",
+        "displayCorrect": false
+    }
+]

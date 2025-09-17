@@ -1,0 +1,23 @@
+[project]
+name = "quizr"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "CptRiggs",email = "122716901+CptRiggs@users.noreply.github.com"}
+]
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "quart (>=0.20.0,<0.21.0)",
+    "uvicorn (>=0.35.0,<0.36.0)"
+]
+
+[tool.poetry]
+packages = [{include = "quizr", from = "src"}]
+
+[tool.poetry.scripts]
+start = "quizr:run"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
